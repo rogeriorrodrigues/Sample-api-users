@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Sample.Api</name>
+    </assembly>
+    <members>
+        <member name="T:Sample.Controllers.Role">
+            <summary>
+            Classe de Cargos
+            </summary>
+        </member>
+        <member name="P:Sample.Controllers.Role.Name">
+            <summary>
+            Nome do Cargo
+            </summary>
+        </member>
+        <member name="T:Sample.Controllers.RolesController">
+            <summary>
+            Recurso que  gerencia roles
+            </summary>
+        </member>
+        <member name="M:Sample.Controllers.RolesController.Get">
+            <summary>
+            Obtem os cargos
+            </summary>
+            <returns>Retorna uma lista de Cargos</returns>
+        </member>
+        <member name="T:Sample_api_users.Controllers.TimeController">
+            <summary>
+            Horario do Servidor
+            </summary>
+        </member>
+        <member name="M:Sample_api_users.Controllers.TimeController.Index">
+            <summary>
+            Obtem a data e a hora atual
+            </summary>
+            <returns>retorna um datetime.now</returns>
+        </member>
+    </members>
+</doc>

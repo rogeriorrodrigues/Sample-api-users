@@ -1,10 +1,14 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.OpenApi.Models;
+using System.Globalization;
+using System.IO;
 
 namespace Sample_api_users
 {
@@ -24,7 +28,7 @@ namespace Sample_api_users
             services.AddControllers();
 
 
-            var clientIdCC = "46c429ba-efed-480c-8688-e0e352054b19";
+            var clientIdCC = "68e218a6-6350-4015-b0dd-ecc1dfbf0f78";
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -50,7 +54,12 @@ namespace Sample_api_users
                         Description = "Sample.Api",
                     });
 
-               
+                var caminhoAplicacao = PlatformServices.Default.Application.ApplicationBasePath;
+                var nomeAplicacao = PlatformServices.Default.Application.ApplicationName;
+                var caminhoXmlDoc = Path.Combine(caminhoAplicacao, $"{nomeAplicacao}.xml");
+                c.IncludeXmlComments(caminhoXmlDoc);
+
+
             });
         }
 
@@ -61,6 +70,20 @@ namespace Sample_api_users
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            //Cultue
+            var supportedCultures = new[]
+            {
+                new CultureInfo("pt-BR"),
+            };
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture(culture: "pt-BR", uiCulture: "pt-BR"),
+                // Formatting numbers, dates, etc.
+                SupportedCultures = supportedCultures,
+                // UI strings that we have localized.
+                SupportedUICultures = supportedCultures
+            });
 
             app.UseHttpsRedirection();
             app.UseAuthentication();

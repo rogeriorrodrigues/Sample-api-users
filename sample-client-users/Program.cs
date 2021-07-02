@@ -20,8 +20,6 @@ namespace sample_client_users
             }).Result;
             var accessToken = response.AccessToken;
 
-            var teste = String.Concat("", "");
-
 
             using (HttpClient httpClient = new HttpClient())
             {
@@ -30,8 +28,15 @@ namespace sample_client_users
                 HttpResponseMessage responseApi = httpClient.SendAsync(request).Result;
                 responseApi.EnsureSuccessStatusCode();
                 string responseBody = responseApi.Content.ReadAsStringAsync().Result;
+
+                Console.WriteLine("Token:");
+                Console.WriteLine(accessToken);
+
+                Console.WriteLine("Response:");
                 Console.WriteLine(responseBody);
             }
+
+
             Console.Read();
         }
     }

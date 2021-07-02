@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 
 namespace Sample_api_users.Controllers
 {
@@ -13,6 +15,7 @@ namespace Sample_api_users.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+
             return Ok(new
             {
 
