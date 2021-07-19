@@ -4,6 +4,34 @@
         <name>Sample.Api</name>
     </assembly>
     <members>
+        <member name="T:Sample_api_users.Controllers.DeviceController">
+            <summary>
+            Devolve informações do Dispositivo
+            </summary>
+        </member>
+        <member name="T:Sample_api_users.Controllers.TimeController">
+            <summary>
+            Horario do Servidor
+            </summary>
+        </member>
+        <member name="M:Sample_api_users.Controllers.TimeController.Index">
+            <summary>
+            Obtem a data e a hora atual
+            </summary>
+            <returns>retorna um datetime.now</returns>
+        </member>
+        <member name="T:Sample_api_users.Utils">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Sample_api_users.Utils.IsMobile(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="user_agent"></param>
+            <returns></returns>
+        </member>
         <member name="T:Sample.Controllers.Role">
             <summary>
             Classe de Cargos
@@ -24,17 +52,6 @@
             Obtem os cargos
             </summary>
             <returns>Retorna uma lista de Cargos</returns>
-        </member>
-        <member name="T:Sample_api_users.Controllers.TimeController">
-            <summary>
-            Horario do Servidor
-            </summary>
-        </member>
-        <member name="M:Sample_api_users.Controllers.TimeController.Index">
-            <summary>
-            Obtem a data e a hora atual
-            </summary>
-            <returns>retorna um datetime.now</returns>
         </member>
     </members>
 </doc>

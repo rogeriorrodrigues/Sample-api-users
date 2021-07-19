@@ -18,7 +18,6 @@ namespace Sample_api_users.Controllers
 
             return Ok(new
             {
-
                 msg = "My Secret"
             });
         }

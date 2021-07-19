@@ -37,7 +37,7 @@ namespace Sample_api_users
                     options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
                     {
                         ValidAudience = clientIdCC,
-                        ValidIssuer = "https://login.microsoftonline.com/b5882312-aafa-467b-b071-96db714bd4f5/v2.0"
+                        ValidIssuer = "https://login.microsoftonline.com/seedazb2c.onmicrosoft.com/v2.0"
 
                     };
                 });
