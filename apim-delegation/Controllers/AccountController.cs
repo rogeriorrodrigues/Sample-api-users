@@ -43,6 +43,11 @@ namespace apim_delegation.Controllers
         }
         public async Task<IActionResult> Index()
         {
+
+            var operations = Request.Query["operation"].ToString();
+            if (operations == "SignOut")
+                return Logout();
+
             return await GenerateTokenSsoUrl();
         }
 
@@ -109,7 +114,6 @@ namespace apim_delegation.Controllers
         
         private async Task<string> CreateAuserInAPIM(string userId, string name, string email)
         {
-            //var apiversionputusers = "2019-01-01";
             var apiversionputusers = this._config["ApiVersionpPutUsers"];
             using (var client = new HttpClient())
             {
@@ -195,7 +199,13 @@ namespace apim_delegation.Controllers
             {
                 Response.Cookies.Delete(cookie.Key);
             }
-            return Redirect("https://seedazb2c.b2clogin.com/seedazb2c.onmicrosoft.com/B2C_1_seed_sso/oauth2/v2.0/logout?client-request-id=6dc0da81-b578-4c49-99c4-dc2a50149398&post_logout_redirect_uri=https://localhost:44390");
+            var client_request_id = this._config["AzureAdB2C:ClientId"];
+            var post_logout_redirect_uri = this._config["post_logout_redirect_uri"];
+            var instance = this._config["AzureAdB2C:Instance"];
+            var domain = this._config["AzureAdB2C:Domain"];
+            var userFlow = this._config["AzureAdB2C:DomaSignUpSignInPolicyIdin"]; 
+            var url = $"{instance}/{domain}/{userFlow}/oauth2/v2.0/logout?client-request-id={client_request_id}&post_logout_redirect_uri={post_logout_redirect_uri}";
+            return Redirect(url);
 
         }
     }
