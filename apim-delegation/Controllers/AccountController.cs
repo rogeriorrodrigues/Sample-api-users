@@ -88,28 +88,8 @@ namespace apim_delegation.Controllers
             var name = User.FindFirstValue("name");
             var email = User.FindFirstValue("emails");
 
-
-            using (HttpClient httpClient = new HttpClient())
-            {
-                var apiversiongetusers = this._config["ApiVersionGetUsers"];
-                var request = new HttpRequestMessage(HttpMethod.Get, string.Concat(ApimRestHostBasic(), "/users", "?api-version=", apiversiongetusers));
-
-                httpClient.DefaultRequestHeaders.Add("Authorization", ApimRestAuthHeader());
-                var response = await httpClient.SendAsync(request);
-
-                response.EnsureSuccessStatusCode();
-
-                var data = await response.Content.ReadAsStringAsync();
-                var result = System.Text.Json.JsonSerializer.Deserialize<ModelUsers>(data);
-                var apimuser = result.value.Where(_ => _.email == email).FirstOrDefault();
-                if (apimuser == null)
-                {
-                    var userIdCreated = await CreateAuserInAPIM(userId, name, email);
-                    return userIdCreated;
-                }
-                return apimuser.id.Replace("/users/", "");
-            }
-
+            return await CreateAuserInAPIM(userId, name, email);
+            
         }
         
         private async Task<string> CreateAuserInAPIM(string userId, string name, string email)
