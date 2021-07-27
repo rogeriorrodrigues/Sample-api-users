@@ -81,7 +81,9 @@ namespace graph_api_samples
             Console.WriteLine($"{me.DisplayName}");
 
 
-            graphServiceClient.Me.ChangePassword(passwordActual, passwordChange).Request().PostAsync().Wait();
+            graphServiceClient.Communications.Request();
+
+            //graphServiceClient.Me.ChangePassword(passwordActual, passwordChange).Request().PostAsync().Wait();
 
 
             Console.Read();

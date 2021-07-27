@@ -20,7 +20,10 @@ namespace Sample.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            return View();
+            return Ok(new
+            {
+
+            });
         }
 
         [HttpPost]
