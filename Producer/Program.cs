@@ -2,9 +2,11 @@
 using Azure.Messaging.ServiceBus;
 using Azure.Security.KeyVault.Secrets;
 using Microsoft.Azure.KeyVault;
+using Microsoft.Azure.ServiceBus;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
+using Polly;
 using System;
 using System.Threading.Tasks;
 
@@ -12,14 +14,15 @@ namespace Producer
 {
     class Program
     {
-        static string connectionString; 
+        static string connectionString;
         static string queueName = "queueSampleSeed";
         static string topicName = "topicSampleSeed";
+        static int errors = 0;
+
         static ServiceBusClient client;
         static ServiceBusSender senderQueue;
         static ServiceBusSender senderTopic;
         static IConfigurationRoot configurationRoot;
-        static int errors = 0;
 
         const int numOfMessages = 1;
 
@@ -28,17 +31,17 @@ namespace Producer
 
             using IHost host = CreateHostBuilder(args).Build();
 
-           
-            var tryCount = 0;
-            while (true)
-            {
-                errors = 0;
-                tryCount++;
-                Console.WriteLine($"try {tryCount} init");
-                await TrySendMessage();
-                System.Threading.Thread.Sleep(30000);
-                Console.WriteLine($"try {tryCount} end");
-            }
+
+            var retryPolicyNeedsTrueResponse =
+                Policy.HandleResult<bool>(b => b != true)
+                .WaitAndRetry(15, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt) / 2));
+
+            bool result = retryPolicyNeedsTrueResponse.Execute(() => SendMessage());
+
+            await senderQueue.DisposeAsync();
+            await senderTopic.DisposeAsync();
+            await client.DisposeAsync();
+
 
             await host.RunAsync();
 
@@ -60,28 +63,31 @@ namespace Producer
                         });
 
 
-        private static async Task TrySendMessage()
+
+        private static bool SendMessage()
         {
             try
             {
-               await ConfigClientSBCns();
+                //ConfigClientSBCns().Wait();
 
-                //ConfigClientSRbac();
+                ConfigClientSRbac();
 
-                await SendManyMessages();
+                SenderQueue().Wait();
+                SenderTopic().Wait();
+
+                return true;
+
             }
             catch (Exception ex)
             {
                 errors++;
-                if (errors <= 15)
-                {
-                    Console.WriteLine($"Erro {errors} retry {ex.Message}");
-                    System.Threading.Thread.Sleep(errors * 300);
-                    await TrySendMessage();
-                }
+                Console.WriteLine($"Erro {errors} retry {ex.Message}");
+                return false;
             }
 
+
         }
+
 
         private static async Task ConfigClientSBCns()
         {
@@ -138,15 +144,7 @@ namespace Producer
         }
 
 
-        private static async Task SendManyMessages()
-        {
-
-
-            await SenderQueue();
-            await SenderTopic();
-            await client.DisposeAsync();
-
-        }
+       
 
         private static async Task<ServiceBusMessageBatch> SenderTopic()
         {
@@ -155,26 +153,12 @@ namespace Producer
 
             for (int i = 1; i <= numOfMessages; i++)
             {
-                // try adding a message to the batch
                 if (!messageBatch.TryAddMessage(new ServiceBusMessage($"Message {i}")))
-                {
-                    // if it is too large for the batch
                     throw new Exception($"The message {i} is too large to fit in the batch.");
-                }
             }
 
-            try
-            {
-                // Use the producer client to send the batch of messages to the Service Bus topic
-                await senderTopic.SendMessagesAsync(messageBatch);
-                Console.WriteLine($"A batch of {numOfMessages} messages has been published to the topic.");
-            }
-            finally
-            {
-                // Calling DisposeAsync on client types is required to ensure that network
-                // resources and other unmanaged objects are properly cleaned up.
-                await senderTopic.DisposeAsync();
-            }
+            await senderTopic.SendMessagesAsync(messageBatch);
+            Console.WriteLine($"A batch of {numOfMessages} messages has been published to the topic.");
 
             return messageBatch;
         }
@@ -182,34 +166,20 @@ namespace Producer
         private static async Task SenderQueue()
         {
             senderQueue = client.CreateSender(queueName);
-
-            // create a batch 
-            ServiceBusMessageBatch messageBatch = await senderQueue.CreateMessageBatchAsync();
+            var messageBatch = await senderQueue.CreateMessageBatchAsync();
 
             for (int i = 1; i <= numOfMessages; i++)
             {
-                // try adding a message to the batch
                 if (!messageBatch.TryAddMessage(new ServiceBusMessage($"Message {i}")))
-                {
-                    // if it is too large for the batch
                     throw new Exception($"The message {i} is too large to fit in the batch.");
-                }
+
                 Console.WriteLine($"mensagem {i} add");
             }
 
-            try
-            {
-                // Use the producer client to send the batch of messages to the Service Bus queue
-                await senderQueue.SendMessagesAsync(messageBatch);
-                Console.WriteLine($"A batch of {numOfMessages} messages has been published to the queue.");
-            }
-            finally
-            {
-                // Calling DisposeAsync on client types is required to ensure that network
-                // resources and other unmanaged objects are properly cleaned up.
-                await senderQueue.DisposeAsync();
 
-            }
+            await senderQueue.SendMessagesAsync(messageBatch);
+            Console.WriteLine($"A batch of {numOfMessages} messages has been published to the queue.");
+
         }
 
 

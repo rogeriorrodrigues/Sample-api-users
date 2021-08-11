@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Consumer": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "AZURE_CLIENT_SECRET": "H.g5syVaC9Mxl.8Wb-9AN7Ppno6I~ZE~zJ",
+        "AZURE_CLIENT_ID": "69ee09e4-c51b-4f79-b9ca-39f56ccd5545",
+        "AZURE_TENANT_ID": "779811d8-4753-4c34-baeb-6b53957d52e3"
+      }
+    }
+  }
+}

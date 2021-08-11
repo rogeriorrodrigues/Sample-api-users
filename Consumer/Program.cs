@@ -3,6 +3,7 @@ using Azure.Messaging.ServiceBus;
 using Azure.Security.KeyVault.Secrets;
 using Microsoft.Azure.KeyVault;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
+using Polly;
 using System;
 using System.Threading.Tasks;
 
@@ -20,38 +21,48 @@ namespace Consumer
         static int errors = 0;
         static async Task Main()
         {
-            await TryReciveMessage();
+
+
+            var retryPolicyNeedsTrueResponse =
+               Policy.HandleResult<bool>(b => b != true)
+               .WaitAndRetry(15, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt) / 2));
+
+            bool result = retryPolicyNeedsTrueResponse.Execute(() => ReciveMessage());
+
+
             Console.ReadKey();
+
+            await processor.StopProcessingAsync();
+            await processor.DisposeAsync();
+            await client.DisposeAsync();
+
+
         }
 
-        private static async Task TryReciveMessage()
+        private static bool ReciveMessage()
         {
             try
             {
-                connectionString = await GetConnectionStringEnvironment();
+                connectionString = GetConnectionStringEnvironment().Result;
                 Console.WriteLine($"{connectionString}");
-                await ReciveMessage();
+                ReciveMessageQueue().Wait();
+                ReciveMessageTopic().Wait();
+                    
+                return true;
             }
             catch (Exception ex)
             {
                 errors++;
-                if (errors <= 15)
-                {
-                    Console.WriteLine($"Erro {errors} retry {ex.Message}");
-                    System.Threading.Thread.Sleep(errors * 300);
-                    await TryReciveMessage();
-                }
+                Console.WriteLine($"Erro {errors} retry {ex.Message}");
+
+                return false;
             }
 
         }
 
-        private static async Task ReciveMessage()
-        {
-            await ReciveMessageQueue();
+        
 
-            await ReciveMessageTopic();
-
-        }
+        
 
         private static async Task ReciveMessageQueue()
         {
@@ -88,10 +99,6 @@ namespace Consumer
         static Task ErrorHandler(ProcessErrorEventArgs args)
         {
             Console.WriteLine($"Erro ErrorHandler: {args.Exception.Message}");
-
-            if (args.Exception.Message.Contains("401"))
-                TryReciveMessage().Wait();
-
             return Task.CompletedTask;
         }
 
