@@ -14,10 +14,16 @@ namespace sample_client_users
             {
                 Address = "https://login.microsoftonline.com/seedazb2c.onmicrosoft.com/oauth2/v2.0/token",
                 ClientId = "46c429ba-efed-480c-8688-e0e352054b19",
-                ClientSecret = "39g8.d05Gvp.hj-9K_D~-NpYmAbVN84Abs",
+                ClientSecret = "-glj_FnB4yinq2~XN3LUefWQf05z7Xj-t6",
                 Scope = "https://seedazb2c.onmicrosoft.com/services/.default"
 
+                //Address = $"https://login.microsoftonline.com/779811d8-4753-4c34-baeb-6b53957d52e3/oauth2/v2.0/token",
+                //ClientId = "c929b1c7-f31f-46ec-b7f9-42385edcb459",
+                //ClientSecret = "0D4JQzXACcjI9.24t-S9d~8yT-i5_xFLQ0",
+                //Scope = "api://7a3837da-9171-4677-9fcd-e66362b054c8/.default"
+
             }).Result;
+
             var accessToken = response.AccessToken;
 
 
