@@ -15,8 +15,6 @@ using System.Threading.Tasks;
 namespace apim_delegation.Controllers
 {
 
-   
-
     /// <summary>
     /// https://github.com/Azure/api-management-samples/blob/master/delegation/ContosoWebApplication/ContosoWebApplication/Controllers/AccountController.cs
     /// https://docs.microsoft.com/pt-br/rest/api/apimanagement/2021-01-01-preview/user/generatessourl
@@ -25,7 +23,6 @@ namespace apim_delegation.Controllers
     /// https://msdn.microsoft.com/en-us/library/azure/dn776336.aspx#ListProducts
     /// </summary>
     /// <returns></returns>
-
     [Authorize]
     public class AccountController : Controller
     {
@@ -51,16 +48,27 @@ namespace apim_delegation.Controllers
             return await GenerateTokenSsoUrl();
         }
 
-       
+
         private async Task<IActionResult> GenerateTokenSsoUrl()
         {
+
+
             using (var client = new HttpClient())
             {
+
                 var ApimRestHost = GetApimRestHostComplete();
                 client.BaseAddress = new Uri(ApimRestHost);
                 client.DefaultRequestHeaders.Add("Authorization", ApimRestAuthHeader());
 
-                var userId = await GetUser();
+                var nameIdentifier = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var name = User.FindFirstValue("name");
+                var email = User.FindFirstValue("emails");
+
+
+                var userId = await GetUser(nameIdentifier, name, email);
+                if (string.IsNullOrEmpty(userId))
+                    userId = await CreateAuserInAPIM(nameIdentifier, name, email);
+
                 var apiVersionssourl = this._config["ApiVersionSSOUrl"];
                 var response = await client.PostAsync("users/" + userId + "/generateSsoUrl?api-version=" + apiVersionssourl, this.GetContent(""));
                 if (response.IsSuccessStatusCode)
@@ -82,16 +90,34 @@ namespace apim_delegation.Controllers
             }
         }
 
-        private async Task<string> GetUser()
+        private async Task<string> GetUser(string userId, string name, string email)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var name = User.FindFirstValue("name");
-            var email = User.FindFirstValue("emails");
 
-            return await CreateAuserInAPIM(userId, name, email);
-            
+
+            using (HttpClient httpClient = new HttpClient())
+            {
+                var apiversiongetusers = this._config["ApiVersionGetUsers"];
+                var request = new HttpRequestMessage(HttpMethod.Get, string.Concat(ApimRestHostBasic(), $"/users/{userId}", "?api-version=", apiversiongetusers));
+
+                httpClient.DefaultRequestHeaders.Add("Authorization", ApimRestAuthHeader());
+                var response = await httpClient.SendAsync(request);
+
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+
+                    var data = await response.Content.ReadAsStringAsync();
+                    var result = System.Text.Json.JsonSerializer.Deserialize<User>(data);
+
+                    if (result != null)
+                        return result.id.Replace("/users/", "");
+                }
+
+                return null;
+
+            }
+
         }
-        
+
         private async Task<string> CreateAuserInAPIM(string userId, string name, string email)
         {
             var apiversionputusers = this._config["ApiVersionpPutUsers"];
@@ -169,8 +195,8 @@ namespace apim_delegation.Controllers
             return new StringContent(requestBody, Encoding.UTF8, "application/json");
         }
 
-               
-       
+
+
 
         public IActionResult Logout()
         {
@@ -183,7 +209,7 @@ namespace apim_delegation.Controllers
             var post_logout_redirect_uri = this._config["post_logout_redirect_uri"];
             var instance = this._config["AzureAdB2C:Instance"];
             var domain = this._config["AzureAdB2C:Domain"];
-            var userFlow = this._config["AzureAdB2C:DomaSignUpSignInPolicyIdin"]; 
+            var userFlow = this._config["AzureAdB2C:SignUpSignInPolicyId"];
             var url = $"{instance}/{domain}/{userFlow}/oauth2/v2.0/logout?client-request-id={client_request_id}&post_logout_redirect_uri={post_logout_redirect_uri}";
             return Redirect(url);
 

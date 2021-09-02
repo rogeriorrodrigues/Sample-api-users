@@ -1,18 +1,11 @@
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.UI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ClientAD
 {
@@ -29,22 +22,12 @@ namespace ClientAD
         public void ConfigureServices(IServiceCollection services)
         {
 
-            var scope = Configuration["ApiWithRoles:ScopeForAccessToken"].Split(" ");
+            var scope = Configuration["Roles:Scope"].Split(" ");
             services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
                  .AddMicrosoftIdentityWebApp(Configuration.GetSection("AzureAd"))
                  .EnableTokenAcquisitionToCallDownstreamApi(scope)
                  .AddInMemoryTokenCaches();
 
-            //services.AddControllersWithViews(options =>
-            //{
-            //    var policy = new AuthorizationPolicyBuilder()
-            //        .RequireAuthenticatedUser()
-            //        .Build();
-
-            //    options.Filters.Add(new AuthorizeFilter(policy));
-            //});
-
-            //services.AddTokenAcquisition();
             services.AddHttpClient();
             services.AddControllersWithViews()
                 .AddMicrosoftIdentityUI();

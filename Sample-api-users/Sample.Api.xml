@@ -4,6 +4,11 @@
         <name>Sample.Api</name>
     </assembly>
     <members>
+        <member name="T:Sample_api_users.Controllers.DataEFController">
+            <summary>
+            Devolve informações do Dispositivo
+            </summary>
+        </member>
         <member name="T:Sample_api_users.Controllers.DeviceController">
             <summary>
             Devolve informações do Dispositivo

@@ -24,6 +24,15 @@ namespace BackAD
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddMicrosoftIdentityWebApi(Configuration, "AzureAd");
 
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddMicrosoftIdentityWebApi(options =>
+                {
+                    Configuration.Bind("AzureAdB2C", options);
+
+                    options.TokenValidationParameters.NameClaimType = "name";
+                },
+                options => { Configuration.Bind("AzureAdB2C", options); });
+
             services.AddControllers();
         }
 

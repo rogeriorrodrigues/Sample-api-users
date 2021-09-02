@@ -35,9 +35,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Functions", "Functions", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ServiceBus", "ServiceBus", "{E0031BE7-B0D7-4851-973E-36DEA4B971CE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Producer", "Producer\Producer.csproj", "{469BD903-C26A-4373-8D36-BBD2192D6EDA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Producer", "Producer\Producer.csproj", "{469BD903-C26A-4373-8D36-BBD2192D6EDA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Consumer", "Consumer\Consumer.csproj", "{8E0A6A48-CC5D-40CE-96FC-7D1BFC0240BE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Consumer", "Consumer\Consumer.csproj", "{8E0A6A48-CC5D-40CE-96FC-7D1BFC0240BE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IAC", "IAC", "{774572E5-417C-4AEB-9532-BCE871771C3B}"
+	ProjectSection(SolutionItems) = preProject
+		IAC\shared-dev-apim-api.template.json = IAC\shared-dev-apim-api.template.json
+		IAC\shared-dev-apim-api.template.parameters.json = IAC\shared-dev-apim-api.template.parameters.json
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

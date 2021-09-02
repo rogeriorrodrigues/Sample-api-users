@@ -7,7 +7,7 @@ namespace Sample_api_users.Controllers
 
     [ApiController]
     [Route("[controller]")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize]
     public class SecretDataController : ControllerBase
     {
         [HttpGet]

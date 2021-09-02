@@ -5,15 +5,15 @@ using System.Threading.Tasks;
 
 namespace apim_delegation.Models
 {
+    public class User
+    {
+        public string email { get; set; }
+        public string displayName { get; set; }
+        public string id { get; set; }
+
+    }
     public class ModelUsers
     {
-        public class User
-        {
-            public string email { get; set; }
-            public string displayName { get; set; }
-            public string id { get; set; }
-
-        }
         public User[] value { get; set; }
     }
 }

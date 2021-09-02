@@ -34,11 +34,11 @@ namespace ClientAD.Controllers
             {
                 var client = _clientFactory.CreateClient();
 
-                var scope = _configuration["ApiWithRoles:ScopeForAccessToken"];
+                var scope = _configuration["Roles:Scope"];
                 var accessToken = await _tokenAcquisition.GetAccessTokenForUserAsync(new[] { scope });
 
                 client.BaseAddress = new Uri(
-                    _configuration["ApiWithRoles:ApiBaseAddress"]);
+                    _configuration["Roles:Api"]);
                 client.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Bearer", accessToken);
                 client.DefaultRequestHeaders.Accept.Add(

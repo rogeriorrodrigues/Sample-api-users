@@ -19,6 +19,7 @@ namespace Sample_api_users.Controllers
 
             return Ok(new
             {
+                User = User.Identity.Name,
                 ua = ua,
                 IsMobile = isM
             });
