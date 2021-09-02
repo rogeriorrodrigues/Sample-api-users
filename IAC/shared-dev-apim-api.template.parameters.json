@@ -1,27 +1,27 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "ApimServiceName": {
-            "value": "shared-dev-apim"
-        },
-        "Description": {
-            "value": "API."
-        },
-        "Version": {
-            "value": "1"
-        },
-        "DisplayName": {
-            "value": "Focus"
-        },
-        "ServiceUrl": {
-            "value": "https://focus-dev-app.azurewebsites.net"
-        },
-        "Path": {
-            "value": "correios"
-        },
-        "ApplicationClientID": {
-            "value": "bbb5c3b7-bd52-47d4-aee3-1f0eb00510b1"
-        }
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "ApimServiceName": {
+      "value": "seed-apim"
+    },
+    "Description": {
+      "value": "API."
+    },
+    "Version": {
+      "value": "1"
+    },
+    "DisplayName": {
+      "value": "Sample"
+    },
+    "ServiceUrl": {
+      "value": "https://seed-api-windows.azurewebsites.net"
+    },
+    "Path": {
+      "value": "sample"
+    },
+    "ApplicationClientID": {
+      "value": "7a3837da-9171-4677-9fcd-e66362b054c8"
     }
+  }
 }
