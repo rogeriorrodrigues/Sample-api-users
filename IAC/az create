@@ -1,0 +1,1 @@
+az deployment group create -g "POCS-WSANTOS-V2" -n "myDeploy" --template-file shared-dev-apim-api.template.json --parameters ApimServiceName=sample-apim-sample Description=API Version=1 DisplayName=sample-api ServiceUrl=https://seed-api-windows-core.azurewebsites.net Path=sample-api ApplicationClientID=7a3837da-9171-4677-9fcd-e66362b054c8

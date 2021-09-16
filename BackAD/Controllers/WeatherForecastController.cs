@@ -8,8 +8,10 @@ using System.Linq;
 namespace BackAD.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize(Policy = "ValidateAccessTokenPolicy")]
     [ApiController]
-    [Authorize()]
+    [Authorize(Roles = "financial.read")]
+    //[Authorize()]
     public class WeatherForecastController : ControllerBase
     {
         private static readonly string[] Summaries = new[]
@@ -25,16 +27,22 @@ namespace BackAD.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<WeatherForecast> Get()
+        public IActionResult Get()
         {
+
+            if (!User.IsInRole("financial.read"))
+                return Forbid(); 
+
+
+
             var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            return Ok(Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateTime.Now.AddDays(index),
                 TemperatureC = rng.Next(-20, 55),
                 Summary = Summaries[rng.Next(Summaries.Length)]
             })
-            .ToArray();
+            .ToArray());
         }
     }
 }

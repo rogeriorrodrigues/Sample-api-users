@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "ApimServiceName": {
-      "value": "seed-apim"
+      "value": "sample-apim-sample"
     },
     "Description": {
       "value": "API."
@@ -15,7 +15,7 @@
       "value": "Sample"
     },
     "ServiceUrl": {
-      "value": "https://seed-api-windows.azurewebsites.net"
+      "value": "https://seed-api-windows-core.azurewebsites.net"
     },
     "Path": {
       "value": "sample"

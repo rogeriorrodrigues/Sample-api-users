@@ -1,4 +1,5 @@
 ﻿using ClientAD.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -14,13 +15,14 @@ using System.Threading.Tasks;
 
 namespace ClientAD.Controllers
 {
+    [Authorize()]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IHttpClientFactory _clientFactory;
         private readonly IConfiguration _configuration;
         private readonly ITokenAcquisition _tokenAcquisition;
-        public HomeController(ILogger<HomeController> logger,IHttpClientFactory clientFactory, IConfiguration config, ITokenAcquisition tokenAcquisition)
+        public HomeController(ILogger<HomeController> logger, IHttpClientFactory clientFactory, IConfiguration config, ITokenAcquisition tokenAcquisition)
         {
             _clientFactory = clientFactory;
             _logger = logger;
@@ -34,8 +36,8 @@ namespace ClientAD.Controllers
             {
                 var client = _clientFactory.CreateClient();
 
-                var scope = _configuration["Roles:Scope"];
-                var accessToken = await _tokenAcquisition.GetAccessTokenForUserAsync(new[] { scope });
+                var scope = _configuration["Roles:Scope"].Split(" "); 
+                var accessToken = await _tokenAcquisition.GetAccessTokenForUserAsync(scope);
 
                 client.BaseAddress = new Uri(
                     _configuration["Roles:Api"]);
@@ -52,9 +54,9 @@ namespace ClientAD.Controllers
                     var data = JArray.Parse(responseContent);
 
                 }
-                var errorList = new List<string> { $"Status code: {response.StatusCode}",  $"Error: {response.ReasonPhrase}" };
-                
-                var result  = JArray.FromObject(errorList);
+                var errorList = new List<string> { $"Status code: {response.StatusCode}", $"Error: {response.ReasonPhrase}" };
+
+                var result = JArray.FromObject(errorList);
             }
             catch (Exception e)
             {

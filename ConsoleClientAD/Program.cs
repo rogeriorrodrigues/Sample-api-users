@@ -3,7 +3,7 @@ using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 
-namespace sample_client_users
+namespace ConsoleClientAD
 {
     class Program
     {
@@ -12,15 +12,10 @@ namespace sample_client_users
             var client = new HttpClient();
             var response = client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
             {
-                //Address = "https://login.microsoftonline.com/seedazb2c.onmicrosoft.com/oauth2/v2.0/token",
-                //ClientId = "46c429ba-efed-480c-8688-e0e352054b19",
-                //ClientSecret = "-glj_FnB4yinq2~XN3LUefWQf05z7Xj-t6",
-                //Scope = "https://seedazb2c.onmicrosoft.com/services/.default"
-
                 Address = $"https://login.microsoftonline.com/779811d8-4753-4c34-baeb-6b53957d52e3/oauth2/v2.0/token",
-                ClientId = "c929b1c7-f31f-46ec-b7f9-42385edcb459",
-                ClientSecret = "bDX3.3T6CW4zGU34l6~0hLiXDD.L8_37rO",
-                Scope = "api://7a3837da-9171-4677-9fcd-e66362b054c8/.default"
+                ClientId = "9d2f260c-829b-4101-91da-1440129d3601",
+                ClientSecret = "KXW49.wcgogWSC3-NJ05.41xzy9PJwD_P1",
+                Scope = "api://47b1d030-f6ff-41a8-8933-c52235a2651b/.default"
 
             }).Result;
 
@@ -29,7 +24,7 @@ namespace sample_client_users
 
             using (HttpClient httpClient = new HttpClient())
             {
-                var request = new HttpRequestMessage(HttpMethod.Get, "https://localhost:44323/SecretData");
+                var request = new HttpRequestMessage(HttpMethod.Get, "https://localhost:44316/api/WeatherForecast");
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
                 HttpResponseMessage responseApi = httpClient.SendAsync(request).Result;
                 responseApi.EnsureSuccessStatusCode();

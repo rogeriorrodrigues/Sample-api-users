@@ -9,9 +9,13 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
+using Sample_api_users.Filters;
+using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 
 namespace Sample_api_users
 {
@@ -72,6 +76,57 @@ namespace Sample_api_users
                 var caminhoXmlDoc = Path.Combine(caminhoAplicacao, $"{nomeAplicacao}.xml");
                 c.IncludeXmlComments(caminhoXmlDoc);
 
+                //c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                //{
+                //    Type = SecuritySchemeType.OAuth2,
+                //    Flows = new OpenApiOAuthFlows
+                //    {
+
+                //        ClientCredentials = new OpenApiOAuthFlow
+                //        {
+                //            TokenUrl = new Uri("https://login.microsoftonline.com/779811d8-4753-4c34-baeb-6b53957d52e3/oauth2/v2.0/token"),
+                //            AuthorizationUrl = new Uri("https://login.microsoftonline.com/779811d8-4753-4c34-baeb-6b53957d52e3/oauth2/v2.0/authorize"),
+                //            Scopes = new Dictionary<string, string>
+                //            {
+                //                { "api://7a3837da-9171-4677-9fcd-e66362b054c8/.default", "api://7a3837da-9171-4677-9fcd-e66362b054c8/.default" },
+                //            }
+                //        },
+
+
+                //    }
+                //});
+
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+
+                    Description = "Please enter into field the word 'Bearer' following by space and JWT",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+                 {
+                           new OpenApiSecurityScheme
+                           {
+                                Reference = new OpenApiReference
+                                {
+                                    Type = ReferenceType.SecurityScheme,
+                                    Id = "Bearer"
+                                },
+                                Scheme = "oauth2",
+                                Name = "Bearer",
+                                In = ParameterLocation.Header,
+
+                            },
+                            new List<string>()
+                    }
+                });
+
+
+                //c.OperationFilter<AuthorizeCheckOperationFilter>();
+
 
             });
         }
@@ -112,6 +167,8 @@ namespace Sample_api_users
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
+                //c.OAuthClientId("c929b1c7-f31f-46ec-b7f9-42385edcb459");
+                //c.OAuthClientSecret("0D4JQzXACcjI9.24t-S9d~8yT-i5_xFLQ0");
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sample.Api");
                 c.OAuthAppName("swagger Dashboard");
 

@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Annotations;
@@ -23,6 +24,7 @@ namespace Sample.Controllers
     /// </summary>
     [ApiController]
     [Route("[controller]")]
+    [Authorize(Roles = "read")]
     public class RolesController : ControllerBase
     {
 

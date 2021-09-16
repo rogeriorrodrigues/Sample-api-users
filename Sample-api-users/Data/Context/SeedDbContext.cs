@@ -10,7 +10,9 @@ namespace Sample_api_users
 
         public SeedDbContext(DbContextOptions<SeedDbContext> options) : base(options)
         {
-
+            //var connection = (Microsoft.Data.SqlClient.SqlConnection)Database.GetDbConnection();
+            //var tokenProv = new Microsoft.Azure.Services.AppAuthentication.AzureServiceTokenProvider();
+            //connection.AccessToken = tokenProv.GetAccessTokenAsync("https://database.windows.net/").Result;
         }
         
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
